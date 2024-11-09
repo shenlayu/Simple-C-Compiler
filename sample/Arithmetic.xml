@@ -191,6 +191,53 @@
     <externalDeclaration>
       <declaration>
         <declarationSpecifiers>
+          <typeSpecifier>
+            <Unsigned>unsigned</Unsigned>
+          </typeSpecifier>
+          <typeSpecifier>
+            <Long>long</Long>
+          </typeSpecifier>
+        </declarationSpecifiers>
+        <initDeclaratorList>
+          <initDeclarator>
+            <declarator>
+              <directDeclarator>
+                <directDeclaratorBase>
+                  <Identifier>strlen</Identifier>
+                </directDeclaratorBase>
+                <directDeclaratorSuffix>
+                  <LeftParen>(</LeftParen>
+                  <parameterTypeList>
+                    <parameterList>
+                      <parameterDeclaration>
+                        <declarationSpecifiers>
+                          <typeQualifier>
+                            <Const>const</Const>
+                          </typeQualifier>
+                          <typeSpecifier>
+                            <Char>char</Char>
+                          </typeSpecifier>
+                        </declarationSpecifiers>
+                        <abstractDeclarator>
+                          <pointer>
+                            <Asterisk>*</Asterisk>
+                          </pointer>
+                        </abstractDeclarator>
+                      </parameterDeclaration>
+                    </parameterList>
+                  </parameterTypeList>
+                  <RightParen>)</RightParen>
+                </directDeclaratorSuffix>
+              </directDeclarator>
+            </declarator>
+          </initDeclarator>
+        </initDeclaratorList>
+        <SemiColon>;</SemiColon>
+      </declaration>
+    </externalDeclaration>
+    <externalDeclaration>
+      <declaration>
+        <declarationSpecifiers>
           <storageClassSpecifier>
             <Typedef>typedef</Typedef>
           </storageClassSpecifier>

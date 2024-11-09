@@ -210,7 +210,7 @@ constantExpression
 
 // 声明（declaration）
 declaration
-    : declarationSpecifiers initDeclaratorList? SemiColon
+    : declarationSpecifiers initDeclaratorList? SemiColon // 此处有二义性 e.g. int a; 或许可以ban掉 int; 这种写法
     | staticAssertDeclaration
     ;
 

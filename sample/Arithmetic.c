@@ -2,11 +2,12 @@ int printf(const char *format, ...);
 int scanf(const char *format, ...);
 int isspace(int c);
 int isdigit(int c);
+unsigned long strlen(const char *);
 
 #define MAX_SIZE 100
 
 typedef struct {
-    int data[MAX_SIZE];
+    int data[100];
     int top;
 } Stack;
 

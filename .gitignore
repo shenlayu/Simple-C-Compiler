@@ -1,0 +1,79 @@
+# 忽略生成的可执行文件
+*.exe
+*.out
+*.app
+
+# 忽略 CMake 生成的构建目录和文件
+build/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# 忽略 Visual Studio 生成的文件
+*.sln
+*.vcxproj*
+*.user
+*.ncb
+*.suo
+*.pdb
+*.log
+*.idb
+*.ipch
+*.obj
+*.tlog
+*.lastbuildstate
+*.vs/
+*.db
+
+# 忽略 Xcode 生成的文件
+*.xcworkspace
+*.xcuserstate
+*.xcodeproj
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+
+# 忽略 ANTLR 生成的文件
+generated/
+*.tokens
+*.interp
+
+# 忽略编译器生成的中间文件
+*.o
+*.a
+*.so
+*.lib
+*.dll
+*.dylib
+
+# 忽略系统文件
+.DS_Store
+Thumbs.db
+
+# 忽略个人编辑器或 IDE 设置文件
+.vscode/
+.idea/
+*.swp
+*~
+
+# 忽略日志文件和其他临时文件
+*.log
+*.tmp
+*.temp
+*.bak
+*.old
+
+# 忽略输出的 XML 文件
+output.xml
+
+rule_
+*.pdf
+CMakeLists.txt.2
+antlr4
+depracated
+.antlr
+ast.xml
+*.pkl
+sample_1.c
