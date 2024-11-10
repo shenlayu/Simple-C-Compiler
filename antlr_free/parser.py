@@ -2,6 +2,30 @@ import re
 import pickle  # 用于加载解析表
 from enum import Enum
 
+class Item:
+    """
+    单个项目
+    """
+    def __init__(self, lhs, rhs, dot_position, lookahead):
+        self.lhs = lhs  # 产生式左部
+        self.rhs = rhs  # 产生式右部
+        self.dot_position = dot_position  # 点的位置
+        self.lookahead = lookahead  # 前瞻符号
+
+    def __eq__(self, other):
+        return (self.lhs == other.lhs and self.rhs == other.rhs and
+                self.dot_position == other.dot_position and
+                self.lookahead == other.lookahead)
+
+    def __hash__(self):
+        return hash((self.lhs, tuple(self.rhs), self.dot_position, tuple(self.lookahead)))
+
+    def __repr__(self):
+        rhs_with_dot = self.rhs.copy()
+        rhs_with_dot.insert(self.dot_position, '·')
+        lookahead_str = '/'.join(self.lookahead)
+        return f"{self.lhs} -> {' '.join(rhs_with_dot)}, [{lookahead_str}]"
+
 class ActionTable:
     """
     Action 表
@@ -10,7 +34,11 @@ class ActionTable:
         self.table = table  # 直接传入已加载的表
 
     def get(self, state_id, symbol):
-        return self.table.get(state_id, {}).get(symbol)
+        entry = self.table.get(state_id, {}).get(symbol)
+        if entry:
+            return entry[0]  # 返回动作
+        else:
+            return None
 
 class GotoTable:
     """
@@ -82,6 +110,7 @@ def lr1_parse(tokens, action_table: ActionTable, goto_table: GotoTable):
                 pass
             state = stack.top()
             goto_state = goto_table.get(state, lhs)
+            print(goto_state)
             if goto_state is None:
                 raise SyntaxError(f"No transition for non-terminal {lhs} from state {state}")
             stack.push(goto_state)
@@ -274,25 +303,26 @@ TOKEN_TYPES = [
     # 整数常量（包括十进制、八进制、十六进制）
     ('Constant', r'''
         # IntegerConstant
-        (0[xX][0-9a-fA-F]+)[uUlL]* # 十六进制
+        (0[xX][0-9a-fA-F]+)([uU]|[lL]|(ll|LL)|([uU][lL])|([uU](ll|LL))|([lL][uU])|((ll|LL)[uU]))? # 十六进制
         |
-        (0[0-7]*)[uUlL]* # 八进制或零
+        (0[0-7]*)([uU]|[lL]|(ll|LL)|([uU][lL])|([uU](ll|LL))|([lL][uU])|((ll|LL)[uU]))? # 八进制或零
         |
-        ([1-9][0-9]*)[uUlL]* # 十进制
+        ([1-9][0-9]*)([uU]|[lL]|(ll|LL)|([uU][lL])|([uU](ll|LL))|([lL][uU])|((ll|LL)[uU]))? # 十进制
         |
         # FloatingConstant
-        ([0-9]+\.[0-9]*([eE][+-]?[0-9]+)?[fFlL]?) # 小数点在中间或后面
+        (([0-9]*\.[0-9]+|[0-9]+\.)[eE][+-]?[0-9]+|([0-9]*\.[0-9]+|[0-9]+\.))[fFlL]?|[0-9]+[eE][+-]?[0-9]+[fFlL]?
         |
-        (\.[0-9]+([eE][+-]?[0-9]+)?[fFlL]?) # 小数点在前面
-        |
-        ([0-9]+[eE][+-]?[0-9]+[fFlL]?) # 指数形式
+        (0[xX](([0-9a-fA-F]*\.[0-9a-fA-F]+|[0-9a-fA-F]+\.)[pP][+-]?[0-9]+|[0-9a-fA-F]+[pP][+-]?[0-9]+))[fFlL]?
         |
         # CharacterConstant
-        (L)?\'(\\.|[^\\\'])+\' # 支持转义字符的字符常量
+        (L|u|U)?'([^\\'\n\r]|\\(['"\\?abfnrtv]|[0-7]{1,3}|x[0-9a-fA-F]+|u[0-9a-fA-F]{4}|U[0-9a-fA-F]{8}))'
+        |
+        # EnumerationConstant
+        [a-zA-Z_][a-zA-Z0-9_]*
     '''),
 
     ('StringLiteral', r'''
-        (u8|u|U|L)?\"(\\.|[^\\"])*\" # 支持转义字符的字符串字面量
+        (u8|u|U|L)?\"([^\\\"\n\r]|\\(['"\\?abfnrtv]|[0-7]{1,3}|x[0-9a-fA-F]+|u[0-9a-fA-F]{4}|U[0-9a-fA-F]{8}))*\"
     '''),
 
     # 未知或无效的字符（放在最后）

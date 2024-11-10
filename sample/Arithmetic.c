@@ -7,7 +7,7 @@ unsigned long strlen(const char *);
 #define MAX_SIZE 100
 
 typedef struct {
-    int data[100];
+    int data[MAX_SIZE];
     int top;
 } Stack;
 

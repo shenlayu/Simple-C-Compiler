@@ -152,12 +152,19 @@ class ActionTable:
     def __init__(self):
         self.table = {}
 
-    def set(self, state_id, symbol, action):
+    def set(self, state_id, symbol, action, item):
         if state_id not in self.table:
             self.table[state_id] = {}
-        self.table[state_id][symbol] = action
+        self.table[state_id][symbol] = (action, item)
 
     def get(self, state_id, symbol):
+        entry = self.table.get(state_id, {}).get(symbol)
+        if entry:
+            return entry[0]  # 返回动作
+        else:
+            return None
+
+    def get_entry(self, state_id, symbol):
         return self.table.get(state_id, {}).get(symbol)
 
     def items(self):
@@ -180,6 +187,51 @@ class GotoTable:
 
     def items(self):
         return self.table.items()
+
+class ItemComparison:
+    """
+    定义某次 移进-归约冲突 / 归约-归约冲突 中的优先级
+    """
+    def __init__(self):
+        # list 中每一项代表一串优先级大于关系
+        self.comparison_table = [
+            # const Example; 中的移进-归约冲突
+            [{'lhs': 'declarationSpecifiers', 'rhs': ['typeSpecifier', '·']},
+             {'lhs': 'typedefName', 'rhs': ['·', 'Identifier']}],
+            # 上述情况在结构体中情形
+            [{'lhs': 'specifierQualifierList', 'rhs': ['typeSpecifier', '·']},
+             {'lhs': 'typedefName', 'rhs': ['·', 'Identifier']}],
+            # Example (x); 中的归约-归约冲突
+            [{'lhs': 'primaryExpression', 'rhs': ['Identifier', '·']},
+             {'lhs': 'typedefName', 'rhs': ['Identifier', '·']}]
+        ]
+
+    def compare_items(self, item1, item2):
+        """
+        比较两个项目，返回：
+        -1: item1 优先级高
+         1: item2 优先级高
+         0: 无法确定优先级
+        """
+        for sequence in self.comparison_table:
+            for i in range(len(sequence) - 1):
+                higher = sequence[i]
+                lower = sequence[i + 1]
+                if (self.item_matches(item1, higher) and self.item_matches(item2, lower)):
+                    return -1
+                if (self.item_matches(item2, higher) and self.item_matches(item1, lower)):
+                    return 1
+        return 1 # XXX 改为0以检查其他冲突
+
+    def item_matches(self, item, pattern):
+        """
+        检查项目是否匹配给定的模式
+        """
+        if item.lhs != pattern['lhs']:
+            return False
+        rhs_with_dot = item.rhs.copy()
+        rhs_with_dot.insert(item.dot_position, '·')
+        return rhs_with_dot == pattern['rhs']
 
 def compute_lookaheads(item: Item, first_sets: FirstSets):
     beta = item.rhs[item.dot_position + 1:]
@@ -260,9 +312,9 @@ def items(grammar: Grammar):
 
 # 构建 ACTION 和 GOTO 表
 
-def construct_parsing_table(automaton: Automaton, grammar: Grammar):
+def construct_parsing_table(automaton: Automaton, grammar: Grammar, item_comparison: ItemComparison):
     """
-    构建解析表（Action 表和 Goto 表）
+    构建解析表（Action 表和 Goto 表），并处理冲突
     """
     action_table = ActionTable()
     goto_table = GotoTable()
@@ -274,13 +326,39 @@ def construct_parsing_table(automaton: Automaton, grammar: Grammar):
                 if symbol in grammar.terminals:
                     next_state_id = state.transitions.get(symbol)
                     if next_state_id is not None:
-                        action_table.set(state_id, symbol, ('shift', next_state_id))
+                        existing_entry = action_table.get_entry(state_id, symbol)
+                        new_action = ('shift', next_state_id)
+                        if existing_entry:
+                            existing_action, existing_item = existing_entry
+                            priority = item_comparison.compare_items(existing_item, item)
+                            if priority == -1:
+                                # 保留已有的动作
+                                pass
+                            elif priority == 1:
+                                # 用新的动作替换
+                                action_table.set(state_id, symbol, new_action, item)
+                            else:
+                                raise Exception(f"在状态 {state_id} 和符号 {symbol} 处发生无法解决的冲突")
+                        else:
+                            action_table.set(state_id, symbol, new_action, item)
             else:
                 if item.lhs == grammar.augmented_start_symbol:
-                    action_table.set(state_id, 'EOF', ('accept',))
+                    action_table.set(state_id, 'EOF', ('accept',), item)
                 else:
                     for lookahead in item.lookahead:
-                        action_table.set(state_id, lookahead, ('reduce', (item.lhs, item.rhs)))
+                        existing_entry = action_table.get_entry(state_id, lookahead)
+                        new_action = ('reduce', (item.lhs, item.rhs))
+                        if existing_entry:
+                            existing_action, existing_item = existing_entry
+                            priority = item_comparison.compare_items(existing_item, item)
+                            if priority == -1:
+                                pass
+                            elif priority == 1:
+                                action_table.set(state_id, lookahead, new_action, item)
+                            else:
+                                raise Exception(f"在状态 {state_id} 和符号 {lookahead} 处发生无法解决的冲突")
+                        else:
+                            action_table.set(state_id, lookahead, new_action, item)
         for symbol in grammar.non_terminals:
             next_state_id = state.transitions.get(symbol)
             if next_state_id is not None:
@@ -293,7 +371,8 @@ def build_parsing_tables(grammar_rules):
     grammar = Grammar(grammar_rules)
     grammar.augment_grammar()
     automaton, first_sets = items(grammar)
-    action_table, goto_table = construct_parsing_table(automaton, grammar)
+    item_comparison = ItemComparison()
+    action_table, goto_table = construct_parsing_table(automaton, grammar, item_comparison)
 
     # 将解析表保存到文件
     with open('action_table.pkl', 'wb') as f:
@@ -301,6 +380,9 @@ def build_parsing_tables(grammar_rules):
 
     with open('goto_table.pkl', 'wb') as f:
         pickle.dump(goto_table, f)
+
+    with open('automaton.pkl', 'wb') as f:
+        pickle.dump(automaton, f)
 
     print("解析表已生成并保存到 'action_table.pkl' 和 'goto_table.pkl' 文件中。")
 
@@ -552,8 +634,8 @@ if __name__ == "__main__":
             ['enumeratorList', 'Comma', 'enumerator']
         ],
         'enumerator': [
-            ['EnumerationConstant'],
-            ['EnumerationConstant', 'Assign', 'constantExpression']
+            ['Identifier'],
+            ['Identifier', 'Assign', 'constantExpression'] # EnumerationConstant 改成 Identifier
         ],
         'atomicTypeSpecifier': [
             ['Atomic', 'LeftParen', 'typeName', 'RightParen']
