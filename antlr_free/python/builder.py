@@ -38,7 +38,13 @@ class Item:
         self.lhs = lhs  # 产生式左部
         self.rhs = rhs  # 产生式右部
         self.dot_position = dot_position  # 点的位置
-        self.lookahead = lookahead  # 前瞻符号
+        self.lookahead = lookahead  # 前瞻符号集合
+
+    def core(self):
+        """
+        返回项目的核心部分（不包括 lookahead）
+        """
+        return (self.lhs, tuple(self.rhs), self.dot_position)
 
     def __eq__(self, other):
         return (self.lhs == other.lhs and self.rhs == other.rhs and
@@ -59,8 +65,17 @@ class ItemSet:
     单个项目集
     """
     def __init__(self, items):
-        self.items = frozenset(items)  # 不可变集合，便于哈希和比较
-        self.transitions = {}  # 记录该状态的转移情况，形如 {符号: 目标ItemSet}
+        self.items = frozenset(items)
+        self.transitions = {}
+
+    def core(self):
+        """
+        返回项目集的核心（不包含 lookahead）
+        """
+        core_items = set()
+        for item in self.items:
+            core_items.add(item.core())
+        return frozenset(core_items)
 
     def __eq__(self, other):
         return self.items == other.items
@@ -74,13 +89,13 @@ class ItemSet:
 
 class Automaton:
     """
-    LR(1) 自动机
+    LALR(1) 自动机
     """
     def __init__(self):
         self.states: list[ItemSet] = []  # 存储所有的ItemSet
         self.state_map = {}  # 从ItemSet到状态编号的映射
 
-    def add_state(self, item_set):
+    def add_state(self, item_set: ItemSet):
         if item_set not in self.state_map:
             state_id = len(self.states)
             self.states.append(item_set)
@@ -187,7 +202,7 @@ class GotoTable:
 
     def items(self):
         return self.table.items()
-
+    
 class ItemComparison:
     """
     定义某次 移进-归约冲突 / 归约-归约冲突 中的优先级
@@ -203,10 +218,13 @@ class ItemComparison:
              {'lhs': 'typedefName', 'rhs': ['·', 'Identifier']}],
             # Example (x); 中的归约-归约冲突
             [{'lhs': 'primaryExpression', 'rhs': ['Identifier', '·']},
-             {'lhs': 'typedefName', 'rhs': ['Identifier', '·']}]
+             {'lhs': 'typedefName', 'rhs': ['Identifier', '·']}],
+            # LALR(1) 疑似会引入悬挂 else 二义性
+            [{'lhs': 'selectionStatement', 'rhs': ['If', 'LeftParen', 'expression', 'RightParen', 'statement', '·', 'Else', 'statement']},
+             {'lhs': 'selectionStatement', 'rhs': ['If', 'LeftParen', 'expression', 'RightParen', 'statement', '·']}],
         ]
 
-    def compare_items(self, item1, item2):
+    def compare_items(self, item1: Item, item2: Item):
         """
         比较两个项目，返回：
         -1: item1 优先级高
@@ -221,6 +239,11 @@ class ItemComparison:
                     return -1
                 if (self.item_matches(item2, higher) and self.item_matches(item1, lower)):
                     return 1
+        # # 移进比归约优先
+        # if (item1.dot_position == len(item1.rhs)) and (item1.dot_position < len(item1.rhs)):
+        #     return 1
+        # elif (item1.dot_position < len(item1.rhs)) and (item1.dot_position == len(item1.rhs)):
+        #     return -1
         return 1 # XXX 改为0以检查其他冲突
 
     def item_matches(self, item, pattern):
@@ -244,8 +267,6 @@ def compute_lookaheads(item: Item, first_sets: FirstSets):
         first_beta.update(item.lookahead)
     return first_beta
 
-# LR(1) 项目集规范族的构建
-
 def closure(item_set: ItemSet, grammar: Grammar, first_sets):
     """
     计算闭包
@@ -262,11 +283,18 @@ def closure(item_set: ItemSet, grammar: Grammar, first_sets):
                     lookaheads = compute_lookaheads(item, first_sets)
                     for production in grammar.productions[symbol]:
                         new_item = Item(symbol, production, 0, lookaheads)
-                        if new_item not in closure_set:
+                        # 合并具有相同核心的项目的 lookahead 集合
+                        for existing_item in closure_set.union(new_items):
+                            if (existing_item.lhs == new_item.lhs and
+                                existing_item.rhs == new_item.rhs and
+                                existing_item.dot_position == new_item.dot_position):
+                                if not new_item.lookahead.issubset(existing_item.lookahead):
+                                    existing_item.lookahead.update(new_item.lookahead)
+                                    added = True
+                                break
+                        else:
                             new_items.add(new_item)
                             added = True
-            else:
-                continue
         closure_set.update(new_items)
     return ItemSet(closure_set)
 
@@ -277,7 +305,7 @@ def goto(item_set: ItemSet, symbol, grammar: Grammar, first_sets):
     goto_items = set()
     for item in item_set.items:
         if item.dot_position < len(item.rhs) and item.rhs[item.dot_position] == symbol:
-            new_item = Item(item.lhs, item.rhs, item.dot_position + 1, item.lookahead)
+            new_item = Item(item.lhs, item.rhs, item.dot_position + 1, item.lookahead.copy())
             goto_items.add(new_item)
     if goto_items:
         return closure(ItemSet(goto_items), grammar, first_sets)
@@ -300,21 +328,50 @@ def items(grammar: Grammar):
         added = False
         for state in automaton.states:
             for symbol in grammar.terminals.union(grammar.non_terminals):
-                if symbol not in state.transitions:
-                    target_state = goto(state, symbol, grammar, first_sets)
-                    if target_state:
-                        state_id = automaton.get_state_id(target_state)
-                        if state_id is None:
-                            state_id = automaton.add_state(target_state)
+                target_state = goto(state, symbol, grammar, first_sets)
+                if target_state:
+                    existing_state_id = automaton.get_state_id(target_state)
+                    # if len(target_state.items) == 1:
+                    #     for item in target_state.items:
+                    #         target_item = item
+                    #     if target_item.lhs == 'primaryExpression' and target_item.rhs == ['Identifier'] and target_item.dot_position == 1:
+                    #         print(target_state.items)
+                    #         print(automaton.get_state_id(target_state))
+                    if existing_state_id is None:
+                        # 检查是否有相同核心的状态
+                        for existing_state in automaton.states:
+                            if existing_state.core() == target_state.core():
+                                # print(1)
+                                # 合并 lookahead 集合
+                                for target_item in target_state.items:
+                                    for existing_item in existing_state.items:
+                                        if (existing_item.lhs == target_item.lhs and
+                                            existing_item.rhs == target_item.rhs and
+                                            existing_item.dot_position == target_item.dot_position):
+                                            # if target_item.lhs == 'primaryExpression' and target_item.rhs == ['Identifier'] and target_item.dot_position == 1:
+                                            #     # print(target_item.lookahead)
+                                            #     # print(existing_item.lookahead)
+                                            #     print(target_state)
+                                            #     print(existing_state)
+                                            #     print(automaton.get_state_id(target_state))
+                                            if not target_item.lookahead.issubset(existing_item.lookahead):
+                                                existing_item.lookahead.update(target_item.lookahead)
+                                                added = True # 如果有新 lookhead 符号, 也要重新扫描
+                                            # if target_item.lhs == 'primaryExpression' and target_item.rhs == ['Identifier'] and target_item.dot_position == 1:
+                                            #     print(target_item.lookahead)
+                                            #     print(existing_item.lookahead)
+                                            #     print("\n")
+                                existing_state_id = automaton.get_state_id(existing_state)
+                                break
+                        if existing_state_id is None: # 没有同芯状态
+                            existing_state_id = automaton.add_state(target_state)
                             added = True
-                        state.transitions[symbol] = state_id
+                    state.transitions[symbol] = existing_state_id
     return automaton, first_sets
-
-# 构建 ACTION 和 GOTO 表
 
 def construct_parsing_table(automaton: Automaton, grammar: Grammar, item_comparison: ItemComparison):
     """
-    构建解析表（Action 表和 Goto 表），并处理冲突
+    构建 Action 表和 Goto 表，并处理冲突
     """
     action_table = ActionTable()
     goto_table = GotoTable()
@@ -364,8 +421,6 @@ def construct_parsing_table(automaton: Automaton, grammar: Grammar, item_compari
             if next_state_id is not None:
                 goto_table.set(state_id, symbol, next_state_id)
     return action_table, goto_table
-
-# 构建解析表并保存到文件
 
 def build_parsing_tables(grammar_rules):
     grammar = Grammar(grammar_rules)

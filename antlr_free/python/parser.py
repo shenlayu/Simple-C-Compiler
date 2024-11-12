@@ -1,30 +1,7 @@
 import re
 import pickle  # 用于加载解析表
 from enum import Enum
-
-class Item:
-    """
-    单个项目
-    """
-    def __init__(self, lhs, rhs, dot_position, lookahead):
-        self.lhs = lhs  # 产生式左部
-        self.rhs = rhs  # 产生式右部
-        self.dot_position = dot_position  # 点的位置
-        self.lookahead = lookahead  # 前瞻符号
-
-    def __eq__(self, other):
-        return (self.lhs == other.lhs and self.rhs == other.rhs and
-                self.dot_position == other.dot_position and
-                self.lookahead == other.lookahead)
-
-    def __hash__(self):
-        return hash((self.lhs, tuple(self.rhs), self.dot_position, tuple(self.lookahead)))
-
-    def __repr__(self):
-        rhs_with_dot = self.rhs.copy()
-        rhs_with_dot.insert(self.dot_position, '·')
-        lookahead_str = '/'.join(self.lookahead)
-        return f"{self.lhs} -> {' '.join(rhs_with_dot)}, [{lookahead_str}]"
+from builder import Item
 
 class ActionTable:
     """
