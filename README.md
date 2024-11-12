@@ -14,6 +14,8 @@ This repository contains a simple yet efficient syntax analyzer for the C progra
 - **Efficient Table Generation:**
   - Implements LALR(1) parsing from scratch, optimizing **ACTION** and **GOTO** tables to reduce memory usage.
   - Faster parsing speed compared to traditional LR(1) parsing.
+- **Alternative Parsing Methods (Deprecated):**
+  - Supports parsing based on **ANTLR** and **C++ implementations** but is no longer maintained and may not guarantee correctness.
 
 ---
 
@@ -28,7 +30,7 @@ This repository contains a simple yet efficient syntax analyzer for the C progra
 1. Clone the repository:
    ```bash
    $ git clone https://github.com/shenlayu/Simple-C-Compiler.git
-   $ cd antlr_free/python
+   $ cd Simple-C-Compiler/antlr_free/python
    $ python builder.py
    $ python parser.py
    (input the c file)
