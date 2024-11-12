@@ -84,3 +84,5 @@ report
 
 builder_LR.py
 builder_LALR.py
+
+__pycache__
