@@ -331,36 +331,19 @@ def items(grammar: Grammar):
                 target_state = goto(state, symbol, grammar, first_sets)
                 if target_state:
                     existing_state_id = automaton.get_state_id(target_state)
-                    # if len(target_state.items) == 1:
-                    #     for item in target_state.items:
-                    #         target_item = item
-                    #     if target_item.lhs == 'primaryExpression' and target_item.rhs == ['Identifier'] and target_item.dot_position == 1:
-                    #         print(target_state.items)
-                    #         print(automaton.get_state_id(target_state))
                     if existing_state_id is None:
                         # 检查是否有相同核心的状态
                         for existing_state in automaton.states:
                             if existing_state.core() == target_state.core():
-                                # print(1)
                                 # 合并 lookahead 集合
                                 for target_item in target_state.items:
                                     for existing_item in existing_state.items:
                                         if (existing_item.lhs == target_item.lhs and
                                             existing_item.rhs == target_item.rhs and
                                             existing_item.dot_position == target_item.dot_position):
-                                            # if target_item.lhs == 'primaryExpression' and target_item.rhs == ['Identifier'] and target_item.dot_position == 1:
-                                            #     # print(target_item.lookahead)
-                                            #     # print(existing_item.lookahead)
-                                            #     print(target_state)
-                                            #     print(existing_state)
-                                            #     print(automaton.get_state_id(target_state))
                                             if not target_item.lookahead.issubset(existing_item.lookahead):
                                                 existing_item.lookahead.update(target_item.lookahead)
                                                 added = True # 如果有新 lookhead 符号, 也要重新扫描
-                                            # if target_item.lhs == 'primaryExpression' and target_item.rhs == ['Identifier'] and target_item.dot_position == 1:
-                                            #     print(target_item.lookahead)
-                                            #     print(existing_item.lookahead)
-                                            #     print("\n")
                                 existing_state_id = automaton.get_state_id(existing_state)
                                 break
                         if existing_state_id is None: # 没有同芯状态
