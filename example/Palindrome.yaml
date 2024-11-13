@@ -1,0 +1,692 @@
+compilationUnit:
+- translationUnit:
+  - translationUnit:
+    - translationUnit:
+      - translationUnit:
+        - translationUnit:
+          - externalDeclaration:
+            - declaration:
+              - declarationSpecifiers:
+                - typeSpecifier:
+                  - Int: int
+              - initDeclaratorList:
+                - initDeclarator:
+                  - declarator:
+                    - directDeclarator:
+                      - directDeclarator:
+                        - Identifier: printf
+                      - LeftParen: (
+                      - parameterTypeList:
+                        - parameterList:
+                          - parameterDeclaration:
+                            - declarationSpecifiers:
+                              - typeQualifier:
+                                - Const: const
+                              - declarationSpecifiers:
+                                - typeSpecifier:
+                                  - Char: char
+                            - declarator:
+                              - pointer:
+                                - Asterisk: '*'
+                              - directDeclarator:
+                                - Identifier: format
+                        - Comma: ','
+                        - Ellipsis: '...'
+                      - RightParen: )
+              - SemiColon: ;
+        - externalDeclaration:
+          - declaration:
+            - declarationSpecifiers:
+              - typeSpecifier:
+                - Int: int
+            - initDeclaratorList:
+              - initDeclarator:
+                - declarator:
+                  - directDeclarator:
+                    - directDeclarator:
+                      - Identifier: scanf
+                    - LeftParen: (
+                    - parameterTypeList:
+                      - parameterList:
+                        - parameterDeclaration:
+                          - declarationSpecifiers:
+                            - typeQualifier:
+                              - Const: const
+                            - declarationSpecifiers:
+                              - typeSpecifier:
+                                - Char: char
+                          - declarator:
+                            - pointer:
+                              - Asterisk: '*'
+                            - directDeclarator:
+                              - Identifier: format
+                      - Comma: ','
+                      - Ellipsis: '...'
+                    - RightParen: )
+            - SemiColon: ;
+      - externalDeclaration:
+        - declaration:
+          - declarationSpecifiers:
+            - typeSpecifier:
+              - Int: int
+          - initDeclaratorList:
+            - initDeclarator:
+              - declarator:
+                - directDeclarator:
+                  - directDeclarator:
+                    - Identifier: strlen
+                  - LeftParen: (
+                  - parameterTypeList:
+                    - parameterList:
+                      - parameterDeclaration:
+                        - declarationSpecifiers:
+                          - typeQualifier:
+                            - Const: const
+                          - declarationSpecifiers:
+                            - typeSpecifier:
+                              - Char: char
+                        - declarator:
+                          - pointer:
+                            - Asterisk: '*'
+                          - directDeclarator:
+                            - Identifier: str
+                  - RightParen: )
+          - SemiColon: ;
+    - externalDeclaration:
+      - functionDefinition:
+        - declarationSpecifiers:
+          - typeSpecifier:
+            - Void: void
+        - declarator:
+          - directDeclarator:
+            - directDeclarator:
+              - Identifier: isPalindrome
+            - LeftParen: (
+            - parameterTypeList:
+              - parameterList:
+                - parameterDeclaration:
+                  - declarationSpecifiers:
+                    - typeSpecifier:
+                      - Char: char
+                  - declarator:
+                    - directDeclarator:
+                      - directDeclarator:
+                        - Identifier: s
+                      - LeftBracket: '['
+                      - RightBracket: ']'
+            - RightParen: )
+        - compoundStatement:
+          - LeftBrace: '{'
+          - blockItemList:
+            - blockItemList:
+              - blockItemList:
+                - blockItemList:
+                  - blockItem:
+                    - declaration:
+                      - declarationSpecifiers:
+                        - typeSpecifier:
+                          - Int: int
+                      - initDeclaratorList:
+                        - initDeclarator:
+                          - declarator:
+                            - directDeclarator:
+                              - Identifier: len
+                          - Assign: '='
+                          - initializer:
+                            - assignmentExpression:
+                              - conditionalExpression:
+                                - logicalOrExpression:
+                                  - logicalAndExpression:
+                                    - inclusiveOrExpression:
+                                      - exclusiveOrExpression:
+                                        - andExpression:
+                                          - equalityExpression:
+                                            - relationalExpression:
+                                              - shiftExpression:
+                                                - additiveExpression:
+                                                  - multiplicativeExpression:
+                                                    - castExpression:
+                                                      - unaryExpression:
+                                                        - postfixExpression:
+                                                          - postfixExpression:
+                                                            - primaryExpression:
+                                                              - Identifier: strlen
+                                                          - LeftParen: (
+                                                          - argumentExpressionList:
+                                                            - assignmentExpression:
+                                                              - conditionalExpression:
+                                                                - logicalOrExpression:
+                                                                  - logicalAndExpression:
+                                                                    - inclusiveOrExpression:
+                                                                      - exclusiveOrExpression:
+                                                                        - andExpression:
+                                                                          - equalityExpression:
+                                                                            - relationalExpression:
+                                                                              - shiftExpression:
+                                                                                - additiveExpression:
+                                                                                  - multiplicativeExpression:
+                                                                                    - castExpression:
+                                                                                      - unaryExpression:
+                                                                                        - postfixExpression:
+                                                                                          - primaryExpression:
+                                                                                            - Identifier: s
+                                                          - RightParen: )
+                      - SemiColon: ;
+                - blockItem:
+                  - declaration:
+                    - declarationSpecifiers:
+                      - typeSpecifier:
+                        - Int: int
+                    - initDeclaratorList:
+                      - initDeclarator:
+                        - declarator:
+                          - directDeclarator:
+                            - Identifier: i
+                    - SemiColon: ;
+              - blockItem:
+                - statement:
+                  - iterationStatement:
+                    - For: for
+                    - LeftParen: (
+                    - expression:
+                      - assignmentExpression:
+                        - unaryExpression:
+                          - postfixExpression:
+                            - primaryExpression:
+                              - Identifier: i
+                        - assignmentOperator:
+                          - Assign: '='
+                        - assignmentExpression:
+                          - conditionalExpression:
+                            - logicalOrExpression:
+                              - logicalAndExpression:
+                                - inclusiveOrExpression:
+                                  - exclusiveOrExpression:
+                                    - andExpression:
+                                      - equalityExpression:
+                                        - relationalExpression:
+                                          - shiftExpression:
+                                            - additiveExpression:
+                                              - multiplicativeExpression:
+                                                - castExpression:
+                                                  - unaryExpression:
+                                                    - postfixExpression:
+                                                      - primaryExpression:
+                                                        - Constant: '0'
+                    - SemiColon: ;
+                    - expression:
+                      - assignmentExpression:
+                        - conditionalExpression:
+                          - logicalOrExpression:
+                            - logicalAndExpression:
+                              - inclusiveOrExpression:
+                                - exclusiveOrExpression:
+                                  - andExpression:
+                                    - equalityExpression:
+                                      - relationalExpression:
+                                        - relationalExpression:
+                                          - shiftExpression:
+                                            - additiveExpression:
+                                              - multiplicativeExpression:
+                                                - castExpression:
+                                                  - unaryExpression:
+                                                    - postfixExpression:
+                                                      - primaryExpression:
+                                                        - Identifier: i
+                                        - LessThan: <
+                                        - shiftExpression:
+                                          - additiveExpression:
+                                            - multiplicativeExpression:
+                                              - multiplicativeExpression:
+                                                - castExpression:
+                                                  - unaryExpression:
+                                                    - postfixExpression:
+                                                      - primaryExpression:
+                                                        - Identifier: len
+                                              - Slash: /
+                                              - castExpression:
+                                                - unaryExpression:
+                                                  - postfixExpression:
+                                                    - primaryExpression:
+                                                      - Constant: '2'
+                    - SemiColon: ;
+                    - expression:
+                      - assignmentExpression:
+                        - conditionalExpression:
+                          - logicalOrExpression:
+                            - logicalAndExpression:
+                              - inclusiveOrExpression:
+                                - exclusiveOrExpression:
+                                  - andExpression:
+                                    - equalityExpression:
+                                      - relationalExpression:
+                                        - shiftExpression:
+                                          - additiveExpression:
+                                            - multiplicativeExpression:
+                                              - castExpression:
+                                                - unaryExpression:
+                                                  - postfixExpression:
+                                                    - postfixExpression:
+                                                      - primaryExpression:
+                                                        - Identifier: i
+                                                    - PlusPlus: ++
+                    - RightParen: )
+                    - statement:
+                      - compoundStatement:
+                        - LeftBrace: '{'
+                        - blockItemList:
+                          - blockItem:
+                            - statement:
+                              - selectionStatement:
+                                - If: if
+                                - LeftParen: (
+                                - expression:
+                                  - assignmentExpression:
+                                    - conditionalExpression:
+                                      - logicalOrExpression:
+                                        - logicalAndExpression:
+                                          - inclusiveOrExpression:
+                                            - exclusiveOrExpression:
+                                              - andExpression:
+                                                - equalityExpression:
+                                                  - equalityExpression:
+                                                    - relationalExpression:
+                                                      - shiftExpression:
+                                                        - additiveExpression:
+                                                          - multiplicativeExpression:
+                                                            - castExpression:
+                                                              - unaryExpression:
+                                                                - postfixExpression:
+                                                                  - postfixExpression:
+                                                                    - primaryExpression:
+                                                                      - Identifier: s
+                                                                  - LeftBracket: '['
+                                                                  - expression:
+                                                                    - assignmentExpression:
+                                                                      - conditionalExpression:
+                                                                        - logicalOrExpression:
+                                                                          - logicalAndExpression:
+                                                                            - inclusiveOrExpression:
+                                                                              - exclusiveOrExpression:
+                                                                                - andExpression:
+                                                                                  - equalityExpression:
+                                                                                    - relationalExpression:
+                                                                                      - shiftExpression:
+                                                                                        - additiveExpression:
+                                                                                          - multiplicativeExpression:
+                                                                                            - castExpression:
+                                                                                              - unaryExpression:
+                                                                                                - postfixExpression:
+                                                                                                  - primaryExpression:
+                                                                                                    - Identifier: i
+                                                                  - RightBracket: ']'
+                                                  - NotEqual: '!='
+                                                  - relationalExpression:
+                                                    - shiftExpression:
+                                                      - additiveExpression:
+                                                        - multiplicativeExpression:
+                                                          - castExpression:
+                                                            - unaryExpression:
+                                                              - postfixExpression:
+                                                                - postfixExpression:
+                                                                  - primaryExpression:
+                                                                    - Identifier: s
+                                                                - LeftBracket: '['
+                                                                - expression:
+                                                                  - assignmentExpression:
+                                                                    - conditionalExpression:
+                                                                      - logicalOrExpression:
+                                                                        - logicalAndExpression:
+                                                                          - inclusiveOrExpression:
+                                                                            - exclusiveOrExpression:
+                                                                              - andExpression:
+                                                                                - equalityExpression:
+                                                                                  - relationalExpression:
+                                                                                    - shiftExpression:
+                                                                                      - additiveExpression:
+                                                                                        - additiveExpression:
+                                                                                          - additiveExpression:
+                                                                                            - multiplicativeExpression:
+                                                                                              - castExpression:
+                                                                                                - unaryExpression:
+                                                                                                  - postfixExpression:
+                                                                                                    - primaryExpression:
+                                                                                                      - Identifier: len
+                                                                                          - Minus: '-'
+                                                                                          - multiplicativeExpression:
+                                                                                            - castExpression:
+                                                                                              - unaryExpression:
+                                                                                                - postfixExpression:
+                                                                                                  - primaryExpression:
+                                                                                                    - Identifier: i
+                                                                                        - Minus: '-'
+                                                                                        - multiplicativeExpression:
+                                                                                          - castExpression:
+                                                                                            - unaryExpression:
+                                                                                              - postfixExpression:
+                                                                                                - primaryExpression:
+                                                                                                  - Constant: '1'
+                                                                - RightBracket: ']'
+                                - RightParen: )
+                                - statement:
+                                  - compoundStatement:
+                                    - LeftBrace: '{'
+                                    - blockItemList:
+                                      - blockItemList:
+                                        - blockItem:
+                                          - statement:
+                                            - expressionStatement:
+                                              - expression:
+                                                - assignmentExpression:
+                                                  - conditionalExpression:
+                                                    - logicalOrExpression:
+                                                      - logicalAndExpression:
+                                                        - inclusiveOrExpression:
+                                                          - exclusiveOrExpression:
+                                                            - andExpression:
+                                                              - equalityExpression:
+                                                                - relationalExpression:
+                                                                  - shiftExpression:
+                                                                    - additiveExpression:
+                                                                      - multiplicativeExpression:
+                                                                        - castExpression:
+                                                                          - unaryExpression:
+                                                                            - postfixExpression:
+                                                                              - postfixExpression:
+                                                                                - primaryExpression:
+                                                                                  - Identifier: printf
+                                                                              - LeftParen: (
+                                                                              - argumentExpressionList:
+                                                                                - assignmentExpression:
+                                                                                  - conditionalExpression:
+                                                                                    - logicalOrExpression:
+                                                                                      - logicalAndExpression:
+                                                                                        - inclusiveOrExpression:
+                                                                                          - exclusiveOrExpression:
+                                                                                            - andExpression:
+                                                                                              - equalityExpression:
+                                                                                                - relationalExpression:
+                                                                                                  - shiftExpression:
+                                                                                                    - additiveExpression:
+                                                                                                      - multiplicativeExpression:
+                                                                                                        - castExpression:
+                                                                                                          - unaryExpression:
+                                                                                                            - postfixExpression:
+                                                                                                              - primaryExpression:
+                                                                                                                - StringLiteral: '"False\n"'
+                                                                              - RightParen: )
+                                              - SemiColon: ;
+                                      - blockItem:
+                                        - statement:
+                                          - jumpStatement:
+                                            - Return: return
+                                            - SemiColon: ;
+                                    - RightBrace: '}'
+                        - RightBrace: '}'
+            - blockItem:
+              - statement:
+                - expressionStatement:
+                  - expression:
+                    - assignmentExpression:
+                      - conditionalExpression:
+                        - logicalOrExpression:
+                          - logicalAndExpression:
+                            - inclusiveOrExpression:
+                              - exclusiveOrExpression:
+                                - andExpression:
+                                  - equalityExpression:
+                                    - relationalExpression:
+                                      - shiftExpression:
+                                        - additiveExpression:
+                                          - multiplicativeExpression:
+                                            - castExpression:
+                                              - unaryExpression:
+                                                - postfixExpression:
+                                                  - postfixExpression:
+                                                    - primaryExpression:
+                                                      - Identifier: printf
+                                                  - LeftParen: (
+                                                  - argumentExpressionList:
+                                                    - assignmentExpression:
+                                                      - conditionalExpression:
+                                                        - logicalOrExpression:
+                                                          - logicalAndExpression:
+                                                            - inclusiveOrExpression:
+                                                              - exclusiveOrExpression:
+                                                                - andExpression:
+                                                                  - equalityExpression:
+                                                                    - relationalExpression:
+                                                                      - shiftExpression:
+                                                                        - additiveExpression:
+                                                                          - multiplicativeExpression:
+                                                                            - castExpression:
+                                                                              - unaryExpression:
+                                                                                - postfixExpression:
+                                                                                  - primaryExpression:
+                                                                                    - StringLiteral: '"True\n"'
+                                                  - RightParen: )
+                  - SemiColon: ;
+          - RightBrace: '}'
+  - externalDeclaration:
+    - functionDefinition:
+      - declarationSpecifiers:
+        - typeSpecifier:
+          - Int: int
+      - declarator:
+        - directDeclarator:
+          - directDeclarator:
+            - Identifier: main
+          - LeftParen: (
+          - RightParen: )
+      - compoundStatement:
+        - LeftBrace: '{'
+        - blockItemList:
+          - blockItemList:
+            - blockItemList:
+              - blockItemList:
+                - blockItemList:
+                  - blockItem:
+                    - declaration:
+                      - declarationSpecifiers:
+                        - typeSpecifier:
+                          - Char: char
+                      - initDeclaratorList:
+                        - initDeclarator:
+                          - declarator:
+                            - directDeclarator:
+                              - directDeclarator:
+                                - Identifier: s
+                              - LeftBracket: '['
+                              - assignmentExpression:
+                                - conditionalExpression:
+                                  - logicalOrExpression:
+                                    - logicalAndExpression:
+                                      - inclusiveOrExpression:
+                                        - exclusiveOrExpression:
+                                          - andExpression:
+                                            - equalityExpression:
+                                              - relationalExpression:
+                                                - shiftExpression:
+                                                  - additiveExpression:
+                                                    - multiplicativeExpression:
+                                                      - castExpression:
+                                                        - unaryExpression:
+                                                          - postfixExpression:
+                                                            - primaryExpression:
+                                                              - Constant: '100'
+                              - RightBracket: ']'
+                      - SemiColon: ;
+                - blockItem:
+                  - statement:
+                    - expressionStatement:
+                      - expression:
+                        - assignmentExpression:
+                          - conditionalExpression:
+                            - logicalOrExpression:
+                              - logicalAndExpression:
+                                - inclusiveOrExpression:
+                                  - exclusiveOrExpression:
+                                    - andExpression:
+                                      - equalityExpression:
+                                        - relationalExpression:
+                                          - shiftExpression:
+                                            - additiveExpression:
+                                              - multiplicativeExpression:
+                                                - castExpression:
+                                                  - unaryExpression:
+                                                    - postfixExpression:
+                                                      - postfixExpression:
+                                                        - primaryExpression:
+                                                          - Identifier: printf
+                                                      - LeftParen: (
+                                                      - argumentExpressionList:
+                                                        - assignmentExpression:
+                                                          - conditionalExpression:
+                                                            - logicalOrExpression:
+                                                              - logicalAndExpression:
+                                                                - inclusiveOrExpression:
+                                                                  - exclusiveOrExpression:
+                                                                    - andExpression:
+                                                                      - equalityExpression:
+                                                                        - relationalExpression:
+                                                                          - shiftExpression:
+                                                                            - additiveExpression:
+                                                                              - multiplicativeExpression:
+                                                                                - castExpression:
+                                                                                  - unaryExpression:
+                                                                                    - postfixExpression:
+                                                                                      - primaryExpression:
+                                                                                        - StringLiteral: '"请输入字符串:
+                                                                                            "'
+                                                      - RightParen: )
+                      - SemiColon: ;
+              - blockItem:
+                - statement:
+                  - expressionStatement:
+                    - expression:
+                      - assignmentExpression:
+                        - conditionalExpression:
+                          - logicalOrExpression:
+                            - logicalAndExpression:
+                              - inclusiveOrExpression:
+                                - exclusiveOrExpression:
+                                  - andExpression:
+                                    - equalityExpression:
+                                      - relationalExpression:
+                                        - shiftExpression:
+                                          - additiveExpression:
+                                            - multiplicativeExpression:
+                                              - castExpression:
+                                                - unaryExpression:
+                                                  - postfixExpression:
+                                                    - postfixExpression:
+                                                      - primaryExpression:
+                                                        - Identifier: scanf
+                                                    - LeftParen: (
+                                                    - argumentExpressionList:
+                                                      - argumentExpressionList:
+                                                        - assignmentExpression:
+                                                          - conditionalExpression:
+                                                            - logicalOrExpression:
+                                                              - logicalAndExpression:
+                                                                - inclusiveOrExpression:
+                                                                  - exclusiveOrExpression:
+                                                                    - andExpression:
+                                                                      - equalityExpression:
+                                                                        - relationalExpression:
+                                                                          - shiftExpression:
+                                                                            - additiveExpression:
+                                                                              - multiplicativeExpression:
+                                                                                - castExpression:
+                                                                                  - unaryExpression:
+                                                                                    - postfixExpression:
+                                                                                      - primaryExpression:
+                                                                                        - StringLiteral: '"%s"'
+                                                      - Comma: ','
+                                                      - assignmentExpression:
+                                                        - conditionalExpression:
+                                                          - logicalOrExpression:
+                                                            - logicalAndExpression:
+                                                              - inclusiveOrExpression:
+                                                                - exclusiveOrExpression:
+                                                                  - andExpression:
+                                                                    - equalityExpression:
+                                                                      - relationalExpression:
+                                                                        - shiftExpression:
+                                                                          - additiveExpression:
+                                                                            - multiplicativeExpression:
+                                                                              - castExpression:
+                                                                                - unaryExpression:
+                                                                                  - postfixExpression:
+                                                                                    - primaryExpression:
+                                                                                      - Identifier: s
+                                                    - RightParen: )
+                    - SemiColon: ;
+            - blockItem:
+              - statement:
+                - expressionStatement:
+                  - expression:
+                    - assignmentExpression:
+                      - conditionalExpression:
+                        - logicalOrExpression:
+                          - logicalAndExpression:
+                            - inclusiveOrExpression:
+                              - exclusiveOrExpression:
+                                - andExpression:
+                                  - equalityExpression:
+                                    - relationalExpression:
+                                      - shiftExpression:
+                                        - additiveExpression:
+                                          - multiplicativeExpression:
+                                            - castExpression:
+                                              - unaryExpression:
+                                                - postfixExpression:
+                                                  - postfixExpression:
+                                                    - primaryExpression:
+                                                      - Identifier: isPalindrome
+                                                  - LeftParen: (
+                                                  - argumentExpressionList:
+                                                    - assignmentExpression:
+                                                      - conditionalExpression:
+                                                        - logicalOrExpression:
+                                                          - logicalAndExpression:
+                                                            - inclusiveOrExpression:
+                                                              - exclusiveOrExpression:
+                                                                - andExpression:
+                                                                  - equalityExpression:
+                                                                    - relationalExpression:
+                                                                      - shiftExpression:
+                                                                        - additiveExpression:
+                                                                          - multiplicativeExpression:
+                                                                            - castExpression:
+                                                                              - unaryExpression:
+                                                                                - postfixExpression:
+                                                                                  - primaryExpression:
+                                                                                    - Identifier: s
+                                                  - RightParen: )
+                  - SemiColon: ;
+          - blockItem:
+            - statement:
+              - jumpStatement:
+                - Return: return
+                - expression:
+                  - assignmentExpression:
+                    - conditionalExpression:
+                      - logicalOrExpression:
+                        - logicalAndExpression:
+                          - inclusiveOrExpression:
+                            - exclusiveOrExpression:
+                              - andExpression:
+                                - equalityExpression:
+                                  - relationalExpression:
+                                    - shiftExpression:
+                                      - additiveExpression:
+                                        - multiplicativeExpression:
+                                          - castExpression:
+                                            - unaryExpression:
+                                              - postfixExpression:
+                                                - primaryExpression:
+                                                  - Constant: '0'
+                - SemiColon: ;
+        - RightBrace: '}'
+- EOF: EOF

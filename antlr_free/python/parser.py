@@ -2,6 +2,7 @@ import re
 import pickle  # 用于加载解析表
 from enum import Enum
 from builder import Item
+import yaml
 
 class ActionTable:
     """
@@ -115,52 +116,43 @@ def indent(xml_lines):
 
     return indented_lines
 
-def ast_to_xml(node):
+def ast_to_yaml(node):
     """
-    将 AST 节点转换为格式化的 XML 字符串。
+    将 AST 节点转换为嵌套字典格式，用于 YAML 序列化
     """
-    xml_lines = []  # 元组形式 (节点, 是否缩进)
-    stack = [(node, NodeType.MIDDLE)]  # 元组形式 (节点, 节点类型)
-
-    while stack:
-        current_node, node_type = stack.pop()
-        if node_type == NodeType.MIDDLE:
-            lhs, children = current_node
-            xml_lines.append((f"<{lhs}>", IndentType.ADD))
-            stack.append((f"</{lhs}>", NodeType.END))
-            for child in reversed(children):
-                if isinstance(child, tuple) and len(child) == 2:
-                    if isinstance(child[1], list):
-                        stack.append((child, NodeType.MIDDLE))
-                    else:
-                        stack.append((child, NodeType.LEAF))
-                else:
-                    # 处理叶子节点
-                    stack.append(((child[0], child[1]), NodeType.LEAF))
-        elif node_type == NodeType.END:
-            xml_lines.append((current_node, IndentType.MINUS))
+    if isinstance(node, tuple) and len(node) == 2:
+        lhs, children = node
+        if isinstance(children, list):
+            return {lhs: [ast_to_yaml(child) for child in children]}
         else:
-            lhs, value = current_node
-            xml_lines.append((f"<{lhs}>{value}</{lhs}>", IndentType.KEEP))
+            return {lhs: children}
+    return node
 
-    return xml_lines
-
-def save_ast_to_xml(ast, output_path):
+def save_ast_to_yaml(ast, output_path):
     """
-    将 AST 保存为格式化的 XML 文件，不使用 xml 模块。
+    将 AST 保存为 YAML 格式文件
     """
-    xml_lines = ast_to_xml(ast)
-    indented_xml = indent(xml_lines)
-    xml_declaration = '<?xml version="1.0" encoding="utf-8"?>\n'
-    xml_content = xml_declaration + "\n".join(indented_xml)
-
+    yaml_ast = ast_to_yaml(ast)
     with open(output_path, 'w', encoding='utf-8') as file:
-        file.write(xml_content)
+        yaml.dump(yaml_ast, file, allow_unicode=True, sort_keys=False)
 
 def generate_ast(file_path, action_table, goto_table):
     tokens = parse_file(file_path)
     ast = lr1_parse(tokens, action_table, goto_table)
     return ast
+
+def save_tokens_to_txt(tokens, output_path):
+    """
+    将 token 流保存为 TXT 格式文件
+    """
+    with open(output_path, 'w', encoding='utf-8') as file:
+        for token in tokens:
+            file.write(f"{token}\n")
+
+def generate_ast_and_tokens(file_path, action_table, goto_table):
+    tokens = parse_file(file_path)
+    ast = lr1_parse(tokens, action_table, goto_table)
+    return ast, tokens
 
 # 定义 TOKEN_TYPES 列表，按照匹配优先级从高到低排序
 TOKEN_TYPES = [
@@ -362,10 +354,18 @@ def parse():
 
     file_path = input("Enter the file path: ")
     try:
-        ast = generate_ast(file_path, action_table, goto_table)
-        output_path = 'ast.xml'
-        save_ast_to_xml(ast, output_path)
-        print(f"抽象语法树已保存到 {output_path}")
+        # 生成 AST 和 token 流
+        ast, tokens = generate_ast_and_tokens(file_path, action_table, goto_table)
+        
+        # 保存 AST 为 YAML 文件
+        ast_output_path = 'ast.yaml'
+        save_ast_to_yaml(ast, ast_output_path)
+        print(f"抽象语法树已保存到 {ast_output_path}")
+        
+        # 保存 token 流为 TXT 文件
+        tokens_output_path = 'tokens.txt'
+        save_tokens_to_txt(tokens, tokens_output_path)
+        print(f"Token 流已保存到 {tokens_output_path}")
     except Exception as e:
         print(f"解析过程中发生错误：{e}")
 
